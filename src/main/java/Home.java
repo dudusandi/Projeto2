@@ -11,16 +11,22 @@ import java.util.List;
 
 public class Home {
 
-    public static void main(String[] args)throws IOException {
-        Reader reader = Files.newBufferedReader(Paths.get("data.csv"));
-        CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
-        CSVReader csvReader = new CSVReaderBuilder(reader)
-                .withCSVParser(parser)
-                .withSkipLines(1)
-                .build();
-        List<String[]> Home = csvReader.readAll();
-        for (String[] home: Home){
-            System.out.println(home[1]);
+    public static void main(String[] args) {
+        try {
+            Reader reader = Files.newBufferedReader(Paths.get("data.csv"));
+            CSVParser parser = new CSVParserBuilder().withSeparator(';').build();
+            CSVReader csvReader = new CSVReaderBuilder(reader)
+                    .withCSVParser(parser)
+                    .withSkipLines(1)
+                    .build();
+
+            List<String[]> Home = csvReader.readAll();
+            for (String[] home : Home) {
+                System.out.println(home[1]);
+                System.out.println("Teste");
+            }
+        }catch (IOException e){
+            System.out.println(e.getMessage());
         }
 
 
