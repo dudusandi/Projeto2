@@ -38,7 +38,7 @@ public class Home {
             List<double[]> targets = new ArrayList<>();
 
             for (String[] row : data) {
-                double[] input = new double[14]; // Definir inputSize com o número correto de características
+                double[] input = new double[16]; // Definir inputSize com o número correto de características
                 for (int i = 2; i < row.length; i++) {
                     input[i - 2] = Double.parseDouble(row[i]);
                 }
@@ -66,7 +66,7 @@ public class Home {
             }
 
 
-            int inputSize = 14; // Tamanho  de entrada
+            int inputSize = 16; // Tamanho  de entrada
             int hiddenSize = 10; // Tamanho da camada oculta
             int outputSize = 3; // Tamanho de saída
             int epochs = 1000; // Número de épocas de treinamento
