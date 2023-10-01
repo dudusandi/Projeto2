@@ -25,6 +25,8 @@ public class Home {
 
     public static void main(String[] args) {
 
+        //teste
+
         // Leitura do CSV
         try {
             Reader reader = Files.newBufferedReader(Paths.get("data.csv"));
