@@ -82,8 +82,7 @@ public class Home {
             //Listar Entradas e fazer a Previsão
             List<double[]> previsoes = new ArrayList<>();
 
-            for (int i = 0; i < entradas.size(); i++) {
-                double[] inputToPredict = entradas.get(i);
+            for (double[] inputToPredict : entradas) {
                 double[] previsao = home.calculaSaida(inputToPredict);
                 previsoes.add(previsao);
             }
