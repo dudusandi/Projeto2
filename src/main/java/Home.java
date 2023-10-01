@@ -85,7 +85,7 @@ public class Home {
 
             for (int i = 0; i < entradas.size(); i++) {
                 double[] inputToPredict = entradas.get(i);
-                double[] previsao = home.forward(inputToPredict);
+                double[] previsao = home.calculaSaida(inputToPredict);
                 previsoes.add(previsao);
             }
 
@@ -133,7 +133,7 @@ public class Home {
 
 
     //Calcula as saídas da rede neural
-    public double[] forward(double[] input) {
+    public double[] calculaSaida(double[] input) {
         double[] hidden = new double[pesoOculto];
         for (int i = 0; i < pesoOculto; i++) {
             hidden[i] = pesosOcultos[i];
@@ -158,29 +158,29 @@ public class Home {
     public void treinar(double[][] inputs, double[][] saidas, int geracao, double taxaAprendizado) {
         for (int i = 0; i < geracao; i++) {
             for (int j = 0; j < inputs.length; j++) {
-                double[] output = forward(inputs[j]);
-                double[] error = new double[pesoSaida];
+                double[] saida = calculaSaida(inputs[j]);
+                double[] erro = new double[pesoSaida];
                 for (int k = 0; k < pesoSaida; k++) {
-                    error[k] = saidas[j][k] - output[k];
+                    erro[k] = saidas[j][k] - saida[k];
                 }
-                double[] hiddenError = new double[pesoOculto];
+                double[] erroOculto = new double[pesoOculto];
                 for (int k = 0; k < pesoOculto; k++) {
-                    hiddenError[k] = 0;
+                    erroOculto[k] = 0;
                     for (int l = 0; l < pesoSaida; l++) {
-                        hiddenError[k] += error[l] * pesoOcultoSaida[k][l];
+                        erroOculto[k] += erro[l] * pesoOcultoSaida[k][l];
                     }
                 }
                 double[] hidden = new double[pesoOculto];
                 for (int k = 0; k < pesoSaida; k++) {
-                    saidasOcultas[k] += taxaAprendizado * error[k];
+                    saidasOcultas[k] += taxaAprendizado * erro[k];
                     for (int l = 0; l < pesoOculto; l++) {
-                        pesoOcultoSaida[l][k] += taxaAprendizado * error[k] * hidden[l];
+                        pesoOcultoSaida[l][k] += taxaAprendizado * erro[k] * hidden[l];
                     }
                 }
                 for (int k = 0; k < pesoOculto; k++) {
-                    pesosOcultos[k] += taxaAprendizado * hiddenError[k];
+                    pesosOcultos[k] += taxaAprendizado * erroOculto[k];
                     for (int l = 0; l < pesoEntrada; l++) {
-                        entradaPesoOculto[l][k] += taxaAprendizado * hiddenError[k] * inputs[j][l];
+                        entradaPesoOculto[l][k] += taxaAprendizado * erroOculto[k] * inputs[j][l];
                     }
                 }
             }
