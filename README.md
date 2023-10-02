@@ -1,1 +1,1 @@
-# Projeto2 - Inteligencia Computacional
+# Projeto2 - Inteligência Computacional
