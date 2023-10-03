@@ -24,6 +24,8 @@ public class Home {
 
     public static void main(String[] args) {
 
+        //Testando GIT
+
 
         // Leitura do CSV
         try {
