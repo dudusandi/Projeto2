@@ -26,6 +26,8 @@ public class Home {
 
         //Teste do github
 
+        //Teste 2 do github
+
 
         // Leitura do CSV
         try {
@@ -92,6 +94,7 @@ public class Home {
                 previsoes.add(previsao);
             }
 
+
             System.out.println("Foram Analisadas " + entradas.size() + " entradas");
             double[] finalResult = calcularMedia(previsoes);
             System.out.println("Resultado final: " + Arrays.toString(finalResult));
@@ -130,6 +133,7 @@ public class Home {
             average[i] /= previsoes.size();
         }
         return average;
+
     }
 
 
