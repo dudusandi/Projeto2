@@ -44,13 +44,15 @@ public class Home {
                 double[] input = new double[13]; // Numero de Entrada de Dados
                 for (int i = 2; i < row.length; i++) {
                     input[i - 2] = Double.parseDouble(row[i]);
+
                 }
                 entradas.add(input);
+
 
                 double[] saida = new double[3]; // Definir outputSize com o número correto de saídas
 
                 // Mapear "H", "A" e "D" para valores numéricos
-                String result = row[1];
+                String result = row[0];
                 if ("H".equals(result)) {
                     saida[0] = 0;
                     saida[1] = 1;
@@ -65,6 +67,7 @@ public class Home {
                     saida[2] = 1;
                 }
 
+
                 saidas.add(saida);
             }
 
@@ -72,8 +75,8 @@ public class Home {
             int tamanhoEntrada = 13;      // Tamanho  de entrada
             int cadamadaOculta = 10;      // Tamanho da camada oculta
             int tamanhoSaida = 3;         // Tamanho de saída
-            int geracoes = 1000;          // Número de gerações de treinamento
-            double taxaAprendizado = 0.7; // Taxa de aprendizado
+            int geracoes = 100;          // Número de gerações de treinamento
+            double taxaAprendizado = 0.07; // Taxa de aprendizado
 
             // Treinar a rede neural
             Home home = new Home(tamanhoEntrada, cadamadaOculta, tamanhoSaida);
