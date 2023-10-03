@@ -24,6 +24,8 @@ public class Home {
 
     public static void main(String[] args) {
 
+        //Teste do github
+
 
         // Leitura do CSV
         try {
@@ -75,7 +77,7 @@ public class Home {
             int tamanhoEntrada = 13;      // Tamanho  de entrada
             int cadamadaOculta = 10;      // Tamanho da camada oculta
             int tamanhoSaida = 3;         // Tamanho de saída
-            int geracoes = 100;          // Número de gerações de treinamento
+            int geracoes = 200;          // Número de gerações de treinamento
             double taxaAprendizado = 0.07; // Taxa de aprendizado
 
             // Treinar a rede neural
@@ -97,8 +99,6 @@ public class Home {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-
-
     }
 
 
