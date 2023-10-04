@@ -13,22 +13,17 @@ import java.util.Random;
 
 public class Home {
 
-    private int pesoEntrada;
-    private int pesoOculto;
-    private int pesoSaida;
-    private double[][] entradaPesoOculto;
-    private double[][] pesoOcultoSaida;
-    private double[] pesosOcultos;
-    private double[] saidasOcultas;
-    private Random random;
+    private final int pesoEntrada;
+    private final int pesoOculto;
+    private final int pesoSaida;
+    private final double[][] entradaPesoOculto;
+    private final double[][] pesoOcultoSaida;
+    private final double[] pesosOcultos;
+    private final double[] saidasOcultas;
+    private final Random random;
 
     public static void main(String[] args) {
 
-        //Testando GIT 123
-
-        //Testando o GIT2
-
-        // Leitura do CSV
         try {
             Reader reader = Files.newBufferedReader(Paths.get("data.csv"));
             CSVParser parser = new CSVParserBuilder().withSeparator(',').build();
@@ -167,6 +162,7 @@ public class Home {
                 for (int k = 0; k < pesoSaida; k++) {
                     erro[k] = saidas[j][k] - saida[k];
                 }
+
                 double[] erroOculto = new double[pesoOculto];
                 for (int k = 0; k < pesoOculto; k++) {
                     erroOculto[k] = 0;
@@ -174,6 +170,7 @@ public class Home {
                         erroOculto[k] += erro[l] * pesoOcultoSaida[k][l];
                     }
                 }
+
                 double[] hidden = new double[pesoOculto];
                 for (int k = 0; k < pesoSaida; k++) {
                     saidasOcultas[k] += taxaAprendizado * erro[k];
