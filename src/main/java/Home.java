@@ -78,12 +78,12 @@ public class Home {
             int tamanhoEntrada = 13;      // Tamanho  de entrada
             int cadamadaOculta = 10;      // Tamanho da camada oculta
             int tamanhoSaida = 3;         // Tamanho de saída
-            int geracoes = 200;          // Número de gerações de treinamento
+            int epocas = 200;          // Número de gerações de treinamento
             double taxaAprendizado = 0.07; // Taxa de aprendizado
 
             // Treinar a rede neural
             Home home = new Home(tamanhoEntrada, cadamadaOculta, tamanhoSaida);
-            home.treinar(entradas.toArray(new double[0][0]), saidas.toArray(new double[0][0]), geracoes, taxaAprendizado);
+            home.treinar(entradas.toArray(new double[0][0]), saidas.toArray(new double[0][0]), epocas, taxaAprendizado);
 
             //Listar Entradas e fazer a Previsão
             List<double[]> previsoes = new ArrayList<>();
@@ -159,8 +159,8 @@ public class Home {
 
 
     // Treinamento
-    public void treinar(double[][] inputs, double[][] saidas, int geracao, double taxaAprendizado) {
-        for (int i = 0; i < geracao; i++) {
+    public void treinar(double[][] inputs, double[][] saidas, int epoca, double taxaAprendizado) {
+        for (int i = 0; i < epoca; i++) {
             for (int j = 0; j < inputs.length; j++) {
                 double[] saida = calculaSaida(inputs[j]);
                 double[] erro = new double[pesoSaida];
