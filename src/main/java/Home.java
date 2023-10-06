@@ -13,20 +13,16 @@ import java.util.Random;
 
 public class Home {
 
-    private int pesoEntrada;
-    private int pesoOculto;
-    private int pesoSaida;
-    private double[][] entradaPesoOculto;
-    private double[][] pesoOcultoSaida;
-    private double[] pesosOcultos;
-    private double[] saidasOcultas;
-    private Random random;
+    private final int pesoEntrada;
+    private final int pesoOculto;
+    private final int pesoSaida;
+    private final double[][] entradaPesoOculto;
+    private final double[][] pesoOcultoSaida;
+    private final double[] pesosOcultos;
+    private final double[] saidasOcultas;
+    private final Random random;
 
     public static void main(String[] args) {
-
-        //Testando GIT 123
-
-        //Testando o GIT2
 
         // Leitura do CSV
         try {
@@ -79,7 +75,7 @@ public class Home {
             int cadamadaOculta = 10;      // Tamanho da camada oculta
             int tamanhoSaida = 3;         // Tamanho de saída
             int epocas = 200;          // Número de gerações de treinamento
-            double taxaAprendizado = 0.07; // Taxa de aprendizado
+            double taxaAprendizado = 0.03; // Taxa de aprendizado
 
             // Treinar a rede neural
             Home home = new Home(tamanhoEntrada, cadamadaOculta, tamanhoSaida);
@@ -160,6 +156,22 @@ public class Home {
 
     // Treinamento
     public void treinar(double[][] inputs, double[][] saidas, int epoca, double taxaAprendizado) {
+
+        double momentum = 0.3;
+        double[][] velocidadeEntradaPesoOculto = new double[pesoEntrada][pesoOculto];
+        for (int i = 0; i < pesoEntrada; i++) {
+            for (int j = 0; j < pesoOculto; j++) {
+                velocidadeEntradaPesoOculto[i][j] = 0.0;
+            }
+        }
+
+        double[][] velocidadeOcultoPesoSaida = new double[pesoOculto][pesoSaida];
+        for (int i = 0; i < pesoOculto; i++) {
+            for (int j = 0; j < pesoSaida; j++) {
+                velocidadeOcultoPesoSaida[i][j] = 0.0;
+            }
+        }
+
         for (int i = 0; i < epoca; i++) {
             for (int j = 0; j < inputs.length; j++) {
                 double[] saida = calculaSaida(inputs[j]);
@@ -174,6 +186,7 @@ public class Home {
                         erroOculto[k] += erro[l] * pesoOcultoSaida[k][l];
                     }
                 }
+
                 double[] hidden = new double[pesoOculto];
                 for (int k = 0; k < pesoSaida; k++) {
                     saidasOcultas[k] += taxaAprendizado * erro[k];
@@ -181,15 +194,39 @@ public class Home {
                         pesoOcultoSaida[l][k] += taxaAprendizado * erro[k] * hidden[l];
                     }
                 }
+
+                for (int k = 0; k < pesoOculto; k++) {
+                    for (int l = 0; l < pesoSaida; l++) {
+                        double gradiente = erro[l] * sigmoid(saida[l]); // Gradiente da função de perda
+                        velocidadeOcultoPesoSaida[k][l] = momentum * velocidadeOcultoPesoSaida[k][l] + taxaAprendizado * gradiente * hidden[k];
+                        pesoOcultoSaida[k][l] += velocidadeOcultoPesoSaida[k][l];
+                    }
+                }
+
                 for (int k = 0; k < pesoOculto; k++) {
                     pesosOcultos[k] += taxaAprendizado * erroOculto[k];
                     for (int l = 0; l < pesoEntrada; l++) {
                         entradaPesoOculto[l][k] += taxaAprendizado * erroOculto[k] * inputs[j][l];
                     }
                 }
+
+
+                for (int k = 0; k < pesoEntrada; k++) {
+                    for (int l = 0; l < pesoOculto; l++) {
+                        double gradiente = 0;
+                        for (int m = 0; m < pesoSaida; m++) {
+                            gradiente += erro[m] * sigmoid(saida[m]) * pesoOcultoSaida[l][m];
+                        }
+                        velocidadeEntradaPesoOculto[k][l] = momentum * velocidadeEntradaPesoOculto[k][l] + taxaAprendizado * gradiente * inputs[j][k];
+                        entradaPesoOculto[k][l] += velocidadeEntradaPesoOculto[k][l];
+                    }
+                }
+            }
+
+
             }
         }
-    }
+
 
 
     // Peso
