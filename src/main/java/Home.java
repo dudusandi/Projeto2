@@ -2,6 +2,7 @@ import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -23,7 +24,6 @@ public class Home {
     private Random random;
 
     public static void main(String[] args) {
-
 
         // Leitura do CSV
         try {
@@ -50,7 +50,7 @@ public class Home {
                 double[] saida = new double[3]; // Definir outputSize com o número correto de saídas
 
                 // Mapear "H", "A" e "D" para valores numéricos
-                String result = row[0];
+                String result = row[1];
                 if ("H".equals(result)) {
                     saida[0] = 0;
                     saida[1] = 1;
@@ -82,8 +82,9 @@ public class Home {
             //Listar Entradas e fazer a Previsão
             List<double[]> previsoes = new ArrayList<>();
 
-            for (double[] inputToPredict : entradas) {
-                double[] previsao = home.calculaSaida(inputToPredict);
+            for (int i = 0; i < entradas.size(); i++) {
+                double[] inputToPredict = entradas.get(i);
+                double[] previsao = home.forward(inputToPredict);
                 previsoes.add(previsao);
             }
 
@@ -131,7 +132,7 @@ public class Home {
 
 
     //Calcula as saídas da rede neural
-    public double[] calculaSaida(double[] input) {
+    public double[] forward(double[] input) {
         double[] hidden = new double[pesoOculto];
         for (int i = 0; i < pesoOculto; i++) {
             hidden[i] = pesosOcultos[i];
@@ -156,29 +157,29 @@ public class Home {
     public void treinar(double[][] inputs, double[][] saidas, int geracao, double taxaAprendizado) {
         for (int i = 0; i < geracao; i++) {
             for (int j = 0; j < inputs.length; j++) {
-                double[] saida = calculaSaida(inputs[j]);
-                double[] erro = new double[pesoSaida];
+                double[] output = forward(inputs[j]);
+                double[] error = new double[pesoSaida];
                 for (int k = 0; k < pesoSaida; k++) {
-                    erro[k] = saidas[j][k] - saida[k];
+                    error[k] = saidas[j][k] - output[k];
                 }
-                double[] erroOculto = new double[pesoOculto];
+                double[] hiddenError = new double[pesoOculto];
                 for (int k = 0; k < pesoOculto; k++) {
-                    erroOculto[k] = 0;
+                    hiddenError[k] = 0;
                     for (int l = 0; l < pesoSaida; l++) {
-                        erroOculto[k] += erro[l] * pesoOcultoSaida[k][l];
+                        hiddenError[k] += error[l] * pesoOcultoSaida[k][l];
                     }
                 }
                 double[] hidden = new double[pesoOculto];
                 for (int k = 0; k < pesoSaida; k++) {
-                    saidasOcultas[k] += taxaAprendizado * erro[k];
+                    saidasOcultas[k] += taxaAprendizado * error[k];
                     for (int l = 0; l < pesoOculto; l++) {
-                        pesoOcultoSaida[l][k] += taxaAprendizado * erro[k] * hidden[l];
+                        pesoOcultoSaida[l][k] += taxaAprendizado * error[k] * hidden[l];
                     }
                 }
                 for (int k = 0; k < pesoOculto; k++) {
-                    pesosOcultos[k] += taxaAprendizado * erroOculto[k];
+                    pesosOcultos[k] += taxaAprendizado * hiddenError[k];
                     for (int l = 0; l < pesoEntrada; l++) {
-                        entradaPesoOculto[l][k] += taxaAprendizado * erroOculto[k] * inputs[j][l];
+                        entradaPesoOculto[l][k] += taxaAprendizado * hiddenError[k] * inputs[j][l];
                     }
                 }
             }
