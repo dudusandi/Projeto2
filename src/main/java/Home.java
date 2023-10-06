@@ -157,21 +157,6 @@ public class Home {
     // Treinamento
     public void treinar(double[][] inputs, double[][] saidas, int epoca, double taxaAprendizado) {
 
-        double momentum = 0.3;
-        double[][] velocidadeEntradaPesoOculto = new double[pesoEntrada][pesoOculto];
-        for (int i = 0; i < pesoEntrada; i++) {
-            for (int j = 0; j < pesoOculto; j++) {
-                velocidadeEntradaPesoOculto[i][j] = 0.0;
-            }
-        }
-
-        double[][] velocidadeOcultoPesoSaida = new double[pesoOculto][pesoSaida];
-        for (int i = 0; i < pesoOculto; i++) {
-            for (int j = 0; j < pesoSaida; j++) {
-                velocidadeOcultoPesoSaida[i][j] = 0.0;
-            }
-        }
-
         for (int i = 0; i < epoca; i++) {
             for (int j = 0; j < inputs.length; j++) {
                 double[] saida = calculaSaida(inputs[j]);
@@ -195,13 +180,6 @@ public class Home {
                     }
                 }
 
-                for (int k = 0; k < pesoOculto; k++) {
-                    for (int l = 0; l < pesoSaida; l++) {
-                        double gradiente = erro[l] * sigmoid(saida[l]); // Gradiente da função de perda
-                        velocidadeOcultoPesoSaida[k][l] = momentum * velocidadeOcultoPesoSaida[k][l] + taxaAprendizado * gradiente * hidden[k];
-                        pesoOcultoSaida[k][l] += velocidadeOcultoPesoSaida[k][l];
-                    }
-                }
 
                 for (int k = 0; k < pesoOculto; k++) {
                     pesosOcultos[k] += taxaAprendizado * erroOculto[k];
