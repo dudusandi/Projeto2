@@ -26,8 +26,6 @@ public class Home {
 
         //Testando GIT 123
 
-        //Testando o GIT2
-
         // Leitura do CSV
         try {
             Reader reader = Files.newBufferedReader(Paths.get("data.csv"));
@@ -166,12 +164,15 @@ public class Home {
                 double[] erro = new double[pesoSaida];
                 for (int k = 0; k < pesoSaida; k++) {
                     erro[k] = saidas[j][k] - saida[k];
+                    //System.out.println(erro[k]);
                 }
+
                 double[] erroOculto = new double[pesoOculto];
                 for (int k = 0; k < pesoOculto; k++) {
                     erroOculto[k] = 0;
                     for (int l = 0; l < pesoSaida; l++) {
                         erroOculto[k] += erro[l] * pesoOcultoSaida[k][l];
+                       // System.out.println(erroOculto[k]);
                     }
                 }
                 double[] hidden = new double[pesoOculto];
@@ -179,12 +180,14 @@ public class Home {
                     saidasOcultas[k] += taxaAprendizado * erro[k];
                     for (int l = 0; l < pesoOculto; l++) {
                         pesoOcultoSaida[l][k] += taxaAprendizado * erro[k] * hidden[l];
+                        //System.out.println(pesoOcultoSaida[l][k]);
                     }
                 }
                 for (int k = 0; k < pesoOculto; k++) {
                     pesosOcultos[k] += taxaAprendizado * erroOculto[k];
                     for (int l = 0; l < pesoEntrada; l++) {
                         entradaPesoOculto[l][k] += taxaAprendizado * erroOculto[k] * inputs[j][l];
+                        //System.out.println(entradaPesoOculto[l][k]);
                     }
                 }
             }
