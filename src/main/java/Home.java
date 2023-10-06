@@ -11,11 +11,13 @@ import java.util.*;
 
 public class Home {
 
+    private static double momentum;
     private final int inputSize;
     private final int hiddenSize;
     private final int outputSize;
     private final double[][] inputToHiddenWeights;
     private final double[][] hiddenToOutputWeights;
+
     private final double[] hiddenBiases;
     private final double[] outputBiases;
     private final Random random;
@@ -102,14 +104,15 @@ public class Home {
                 validationTargets.add(target);
             }
 
-            int inputSize = 12;             // Data Input
+            int inputSize = 12;              // Data Input
             int hiddenSize = 10;             // Neurons Number
-            int outputSize = 3;             // Data Output
+            int outputSize = 3;              // Data Output
             int epochs = 200;                // Epochs Training
             double learningRate = 0.07;      // Learning Rate
+            double momentum = 0.1;           // Momentum
 
             Home neuralNetwork = new Home(inputSize, hiddenSize, outputSize);
-            neuralNetwork.train(trainingInputs.toArray(new double[0][0]), trainingTargets.toArray(new double[0][0]), epochs, learningRate);
+            neuralNetwork.train(trainingInputs.toArray(new double[0][0]), trainingTargets.toArray(new double[0][0]), epochs, learningRate, momentum);
 
             double validationError = neuralNetwork.validate(validationInputs.toArray(new double[0][0]), validationTargets.toArray(new double[0][0]));
             System.out.println("Validation Error: " + validationError);
@@ -126,20 +129,19 @@ public class Home {
     }
 
 
-
     public Home(int inputSize, int hiddenSize, int outputSize) {
         this.inputSize = inputSize;
         this.hiddenSize = hiddenSize;
         this.outputSize = outputSize;
         inputToHiddenWeights = new double[inputSize][hiddenSize];
         hiddenToOutputWeights = new double[hiddenSize][outputSize];
+        double[][] inputToHiddenWeightMomentum = new double[inputSize][hiddenSize];
+        double[][] hiddenToOutputWeightMomentum = new double[hiddenSize][outputSize];
         hiddenBiases = new double[hiddenSize];
         outputBiases = new double[outputSize];
         random = new Random();
         initWeights();
     }
-
-
 
 
     public double validate(double[][] inputs, double[][] targets) {
@@ -162,6 +164,7 @@ public class Home {
         return totalError / inputs.length;
     }
 
+
     public double[] forward(double[] input) {
         double[] hidden = new double[hiddenSize];
         for (int i = 0; i < hiddenSize; i++) {
@@ -183,14 +186,16 @@ public class Home {
     }
 
 
-
-    public void train(double[][] inputs, double[][] targets, int epochs, double learningRate) {
+    public void train(double[][] inputs, double[][] targets, int epochs, double learningRate, double momentum) {
         double totalError = 0.0;
+        double[][] inputToHiddenWeightMomentum = new double[inputSize][hiddenSize];
+        double[][] hiddenToOutputWeightMomentum = new double[hiddenSize][outputSize];
 
         for (int i = 0; i < epochs; i++) {
             for (int j = 0; j < inputs.length; j++) {
                 double[] output = forward(inputs[j]);
                 double[] error = new double[outputSize];
+
                 for (int k = 0; k < outputSize; k++) {
                     error[k] = targets[j][k] - output[k];
                 }
@@ -202,7 +207,7 @@ public class Home {
                 totalError += dataPointError;
 
                 double averageError = totalError / inputs.length;
-               // System.out.println("Epoch " + (i + 1) + " - Average Error: " + averageError);
+                System.out.println("Epoch " + (i + 1) + " - Average Error: " + averageError);
                 totalError = 0.0;
 
                 double[] hiddenError = new double[hiddenSize];
@@ -216,19 +221,20 @@ public class Home {
                 for (int k = 0; k < outputSize; k++) {
                     outputBiases[k] += learningRate * error[k];
                     for (int l = 0; l < hiddenSize; l++) {
-                        hiddenToOutputWeights[l][k] += learningRate * error[k] * hidden[l];
+                        hiddenToOutputWeightMomentum[l][k] = momentum * hiddenToOutputWeightMomentum[l][k] + learningRate * error[k] * hidden[l];
+                        hiddenToOutputWeights[l][k] += hiddenToOutputWeightMomentum[l][k];
                     }
                 }
                 for (int k = 0; k < hiddenSize; k++) {
                     hiddenBiases[k] += learningRate * hiddenError[k];
                     for (int l = 0; l < inputSize; l++) {
-                        inputToHiddenWeights[l][k] += learningRate * hiddenError[k] * inputs[j][l];
+                        inputToHiddenWeightMomentum[l][k] = momentum * inputToHiddenWeightMomentum[l][k] + learningRate * hiddenError[k] * inputs[j][l];
+                        inputToHiddenWeights[l][k] += inputToHiddenWeightMomentum[l][k];
                     }
                 }
             }
         }
     }
-
 
 
     private void initWeights() {
