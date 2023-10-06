@@ -13,16 +13,17 @@ import java.util.Random;
 
 public class Home {
 
-    private final int pesoEntrada;
-    private final int pesoOculto;
-    private final int pesoSaida;
-    private final double[][] entradaPesoOculto;
-    private final double[][] pesoOcultoSaida;
-    private final double[] pesosOcultos;
-    private final double[] saidasOcultas;
-    private final Random random;
+    private int pesoEntrada;
+    private int pesoOculto;
+    private int pesoSaida;
+    private double[][] entradaPesoOculto;
+    private double[][] pesoOcultoSaida;
+    private double[] pesosOcultos;
+    private double[] saidasOcultas;
+    private Random random;
 
     public static void main(String[] args) {
+
 
         // Leitura do CSV
         try {
@@ -43,15 +44,13 @@ public class Home {
                 double[] input = new double[13]; // Numero de Entrada de Dados
                 for (int i = 2; i < row.length; i++) {
                     input[i - 2] = Double.parseDouble(row[i]);
-
                 }
                 entradas.add(input);
-
 
                 double[] saida = new double[3]; // Definir outputSize com o número correto de saídas
 
                 // Mapear "H", "A" e "D" para valores numéricos
-                String result = row[0];
+                String result = row[1];
                 if ("H".equals(result)) {
                     saida[0] = 0;
                     saida[1] = 1;
@@ -66,7 +65,6 @@ public class Home {
                     saida[2] = 1;
                 }
 
-
                 saidas.add(saida);
             }
 
@@ -74,12 +72,12 @@ public class Home {
             int tamanhoEntrada = 13;      // Tamanho  de entrada
             int cadamadaOculta = 10;      // Tamanho da camada oculta
             int tamanhoSaida = 3;         // Tamanho de saída
-            int epocas = 200;          // Número de gerações de treinamento
-            double taxaAprendizado = 0.03; // Taxa de aprendizado
+            int geracoes = 1000;          // Número de gerações de treinamento
+            double taxaAprendizado = 0.7; // Taxa de aprendizado
 
             // Treinar a rede neural
             Home home = new Home(tamanhoEntrada, cadamadaOculta, tamanhoSaida);
-            home.treinar(entradas.toArray(new double[0][0]), saidas.toArray(new double[0][0]), epocas, taxaAprendizado);
+            home.treinar(entradas.toArray(new double[0][0]), saidas.toArray(new double[0][0]), geracoes, taxaAprendizado);
 
             //Listar Entradas e fazer a Previsão
             List<double[]> previsoes = new ArrayList<>();
@@ -89,7 +87,6 @@ public class Home {
                 previsoes.add(previsao);
             }
 
-
             System.out.println("Foram Analisadas " + entradas.size() + " entradas");
             double[] finalResult = calcularMedia(previsoes);
             System.out.println("Resultado final: " + Arrays.toString(finalResult));
@@ -97,6 +94,8 @@ public class Home {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+
+
     }
 
 
@@ -128,7 +127,6 @@ public class Home {
             average[i] /= previsoes.size();
         }
         return average;
-
     }
 
 
@@ -155,9 +153,8 @@ public class Home {
 
 
     // Treinamento
-    public void treinar(double[][] inputs, double[][] saidas, int epoca, double taxaAprendizado) {
-
-        for (int i = 0; i < epoca; i++) {
+    public void treinar(double[][] inputs, double[][] saidas, int geracao, double taxaAprendizado) {
+        for (int i = 0; i < geracao; i++) {
             for (int j = 0; j < inputs.length; j++) {
                 double[] saida = calculaSaida(inputs[j]);
                 double[] erro = new double[pesoSaida];
@@ -171,7 +168,6 @@ public class Home {
                         erroOculto[k] += erro[l] * pesoOcultoSaida[k][l];
                     }
                 }
-
                 double[] hidden = new double[pesoOculto];
                 for (int k = 0; k < pesoSaida; k++) {
                     saidasOcultas[k] += taxaAprendizado * erro[k];
@@ -179,32 +175,15 @@ public class Home {
                         pesoOcultoSaida[l][k] += taxaAprendizado * erro[k] * hidden[l];
                     }
                 }
-
-
                 for (int k = 0; k < pesoOculto; k++) {
                     pesosOcultos[k] += taxaAprendizado * erroOculto[k];
                     for (int l = 0; l < pesoEntrada; l++) {
                         entradaPesoOculto[l][k] += taxaAprendizado * erroOculto[k] * inputs[j][l];
                     }
                 }
-
-
-                for (int k = 0; k < pesoEntrada; k++) {
-                    for (int l = 0; l < pesoOculto; l++) {
-                        double gradiente = 0;
-                        for (int m = 0; m < pesoSaida; m++) {
-                            gradiente += erro[m] * sigmoid(saida[m]) * pesoOcultoSaida[l][m];
-                        }
-                        velocidadeEntradaPesoOculto[k][l] = momentum * velocidadeEntradaPesoOculto[k][l] + taxaAprendizado * gradiente * inputs[j][k];
-                        entradaPesoOculto[k][l] += velocidadeEntradaPesoOculto[k][l];
-                    }
-                }
-            }
-
-
             }
         }
-
+    }
 
 
     // Peso
