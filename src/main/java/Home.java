@@ -50,7 +50,7 @@ public class Home {
                 double[] saida = new double[3]; // Definir outputSize com o número correto de saídas
 
                 // Mapear "H", "A" e "D" para valores numéricos
-                String result = row[1];
+                String result = row[0];
                 if ("H".equals(result)) {
                     saida[0] = 0;
                     saida[1] = 1;
