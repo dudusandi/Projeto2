@@ -13,18 +13,17 @@ import java.util.Random;
 
 public class Home {
 
-    private int pesoEntrada;
-    private int pesoOculto;
-    private int pesoSaida;
-    private double[][] entradaPesoOculto;
-    private double[][] pesoOcultoSaida;
-    private double[] pesosOcultos;
-    private double[] saidasOcultas;
-    private Random random;
+    private final int pesoEntrada;
+    private final int pesoOculto;
+    private final int pesoSaida;
+    private final double[][] entradaPesoOculto;
+    private final double[][] pesoOcultoSaida;
+    private final double[] pesosOcultos;
+    private final double[] saidasOcultas;
+    private final Random random;
 
     public static void main(String[] args) {
 
-        //Testando GIT 123
 
         // Leitura do CSV
         try {
