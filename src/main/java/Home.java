@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class Home {
-
+//oi
     private static double momentum;
     private final int inputSize;
     private final int hiddenSize;
