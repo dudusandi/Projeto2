@@ -26,7 +26,7 @@ public class Home {
 
     public static void main(String[] args) {
         try {
-            Reader reader = Files.newBufferedReader(Paths.get("datas.csv"));
+            Reader reader = Files.newBufferedReader(Paths.get("data.csv"));
             CSVParser parser = new CSVParserBuilder().withSeparator(',').build();
             CSVReader csvReader = new CSVReaderBuilder(reader)
                     .withCSVParser(parser)
