@@ -11,7 +11,6 @@ import java.util.*;
 
 public class Home {
 //oi
-    private static double momentum;
     private final int inputSize;
     private final int hiddenSize;
     private final int outputSize;
@@ -136,8 +135,6 @@ public class Home {
         this.outputSize = outputSize;
         inputToHiddenWeights = new double[inputSize][hiddenSize];
         hiddenToOutputWeights = new double[hiddenSize][outputSize];
-        double[][] inputToHiddenWeightMomentum = new double[inputSize][hiddenSize];
-        double[][] hiddenToOutputWeightMomentum = new double[hiddenSize][outputSize];
         hiddenBiases = new double[hiddenSize];
         outputBiases = new double[outputSize];
         random = new Random();
