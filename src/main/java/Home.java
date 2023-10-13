@@ -110,7 +110,7 @@ public class Home {
             int outputSize = 3;              // Data Output
             int epochs = 200;                // Epochs Training
             double learningRate = 0.07;      // Learning Rate
-            double momentum = 0.1;           // Momentum
+            double momentum = 0.9;           // Momentum
 
             Home neuralNetwork = new Home(inputSize, hiddenSize, outputSize);
             neuralNetwork.train(trainingInputs.toArray(new double[0][0]), trainingTargets.toArray(new double[0][0]), epochs, learningRate, momentum);
