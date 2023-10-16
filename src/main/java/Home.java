@@ -21,9 +21,6 @@ public class Home {
     private final double[] outputBiases;
     private final Random random;
 
-
-    //Teste2
-
     public static void main(String[] args) {
         try {
             Reader reader = Files.newBufferedReader(Paths.get("data.csv"));
@@ -35,19 +32,14 @@ public class Home {
 
             List<String[]> data = csvReader.readAll();
 
-
-
             long seed = System.nanoTime();
             Collections.shuffle(data, new Random(seed));
-
 
             double splitRatio = 0.7;
             int splitIndex = (int) (data.size() * splitRatio);
 
-
             List<String[]> trainingData = data.subList(0, splitIndex);
             List<String[]> validationData = data.subList(splitIndex, data.size());
-
 
             List<double[]> trainingInputs = new ArrayList<>();
             List<double[]> trainingTargets = new ArrayList<>();
@@ -64,12 +56,12 @@ public class Home {
                 double[] target = new double[3];
                 String result = row[0];
                 if ("H".equals(result)) {
-                    target[0] = 0;
-                    target[1] = 1;
-                    target[2] = 0;
-                } else if ("A".equals(result)) {
                     target[0] = 1;
                     target[1] = 0;
+                    target[2] = 0;
+                } else if ("A".equals(result)) {
+                    target[0] = 0;
+                    target[1] = 1;
                     target[2] = 0;
                 } else if ("D".equals(result)) {
                     target[0] = 0;
@@ -89,14 +81,14 @@ public class Home {
                 double[] target = new double[3];
                 String result = row[0];
                 if ("H".equals(result)) {
-                    target[0] = 0;
-                    target[1] = 1;
-                    target[2] = 0;
-                }else if ("A".equals(result)) {
                     target[0] = 1;
                     target[1] = 0;
                     target[2] = 0;
-                }else if ("D".equals(result)) {
+                } else if ("A".equals(result)) {
+                    target[0] = 0;
+                    target[1] = 1;
+                    target[2] = 0;
+                } else if ("D".equals(result)) {
                     target[0] = 0;
                     target[1] = 0;
                     target[2] = 1;
@@ -115,16 +107,39 @@ public class Home {
             neuralNetwork.train(trainingInputs.toArray(new double[0][0]), trainingTargets.toArray(new double[0][0]), epochs, learningRate, momentum);
 
             double validationError = neuralNetwork.validate(validationInputs.toArray(new double[0][0]), validationTargets.toArray(new double[0][0]));
-            System.out.println("Validation Error: " + validationError);
+            System.out.println("Taxa de Erro de " + validationError);
 
-            double[] inputToPredict = validationInputs.get(0);
-            double[] prediction = neuralNetwork.forward(inputToPredict);
-            System.out.println("Victory Prediction(Home Team: Away Team : Draw): " + Arrays.toString(prediction));
 
+            double[] prediction = new double[0];
+
+            List<int[]> confusionMatrix = new ArrayList<>();
+            for (int i = 0; i < validationInputs.size(); i++) {
+                double[] inputToPredict = validationInputs.get(i);
+                prediction = neuralNetwork.forward(inputToPredict);
+
+                int trueClass = getClassFromTarget(validationTargets.get(i));
+                int predictedClass = getClassFromPrediction(prediction);
+
+                while (confusionMatrix.size() <= trueClass) {
+                    confusionMatrix.add(new int[outputSize]);
+                }
+                confusionMatrix.get(trueClass)[predictedClass]++;
+
+            }
+            System.out.println("Previsão de Vitoria(Time da Casa: Visitante : Empate): " + Arrays.toString(prediction));
+            System.out.println("Matriz de Confusão:");
+            for (int i = 0; i < confusionMatrix.size(); i++) {
+                System.out.print("Classe " + i + ": ");
+                for (int j = 0; j < outputSize; j++) {
+                    System.out.print(confusionMatrix.get(i)[j] + " ");
+                }
+                System.out.println();
+            }
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+
 
     }
 
@@ -142,6 +157,26 @@ public class Home {
     }
 
 
+    private static int getClassFromPrediction(double[] prediction) {
+        int predictedClass = 0;
+        double maxProbability = prediction[0];
+        for (int i = 1; i < prediction.length; i++) {
+            if (prediction[i] > maxProbability) {
+                maxProbability = prediction[i];
+                predictedClass = i;
+            }
+        }
+        return predictedClass;
+    }
+
+    private static int getClassFromTarget(double[] target) {
+        for (int i = 0; i < target.length; i++) {
+            if (target[i] == 1) {
+                return i;
+            }
+        }
+        return -1;
+    }
     public double validate(double[][] inputs, double[][] targets) {
         double totalError = 0.0;
 
@@ -205,7 +240,7 @@ public class Home {
                 totalError += dataPointError;
 
                 double averageError = totalError / inputs.length;
-                System.out.println("Epoch " + (i + 1) + " - Average Error: " + averageError);
+                System.out.println("Época " + (i + 1) + " - Erro Médio: " + averageError);
                 totalError = 0.0;
 
                 double[] hiddenError = new double[hiddenSize];
