@@ -240,7 +240,7 @@ public class Home {
                 totalError += dataPointError;
 
                 double averageError = totalError / inputs.length;
-                System.out.println("Época " + (i + 1) + " - Erro Médio: " + averageError);
+                System.out.println("Época " + (i + 1) + " - Erro: " + averageError);
                 totalError = 0.0;
 
                 double[] hiddenError = new double[hiddenSize];
