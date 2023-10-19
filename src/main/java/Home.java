@@ -112,26 +112,26 @@ public class Home {
 
             double[] prediction = new double[0];
 
-            List<int[]> confusionMatrix = new ArrayList<>();
+            List<int[]> Matrix = new ArrayList<>();
             for (int i = 0; i < validationInputs.size(); i++) {
                 double[] inputToPredict = validationInputs.get(i);
                 prediction = neuralNetwork.forward(inputToPredict);
 
-                int trueClass = getClassFromTarget(validationTargets.get(i));
-                int predictedClass = getClassFromPrediction(prediction);
+                int trueClass = getTarget(validationTargets.get(i));
+                int predictedClass = getClass(prediction);
 
-                while (confusionMatrix.size() <= trueClass) {
-                    confusionMatrix.add(new int[outputSize]);
+                while (Matrix.size() <= trueClass) {
+                    Matrix.add(new int[outputSize]);
                 }
-                confusionMatrix.get(trueClass)[predictedClass]++;
+                Matrix.get(trueClass)[predictedClass]++;
 
             }
             System.out.println("Previsão de Vitoria(Time da Casa: Visitante : Empate): " + Arrays.toString(prediction));
             System.out.println("Matriz de Confusão:");
-            for (int i = 0; i < confusionMatrix.size(); i++) {
+            for (int i = 0; i < Matrix.size(); i++) {
                 System.out.print("Classe " + i + ": ");
                 for (int j = 0; j < outputSize; j++) {
-                    System.out.print(confusionMatrix.get(i)[j] + " ");
+                    System.out.print(Matrix.get(i)[j] + " ");
                 }
                 System.out.println();
             }
@@ -157,7 +157,7 @@ public class Home {
     }
 
 
-    private static int getClassFromPrediction(double[] prediction) {
+    private static int getClass(double[] prediction) {
         int predictedClass = 0;
         double maxProbability = prediction[0];
         for (int i = 1; i < prediction.length; i++) {
@@ -169,7 +169,7 @@ public class Home {
         return predictedClass;
     }
 
-    private static int getClassFromTarget(double[] target) {
+    private static int getTarget(double[] target) {
         for (int i = 0; i < target.length; i++) {
             if (target[i] == 1) {
                 return i;
