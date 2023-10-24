@@ -96,18 +96,18 @@ public class Home {
                 validationTargets.add(target);
             }
 
-            int inputSize = 12;              // Data Input
-            int hiddenSize = 10;             // Neurons Number
-            int outputSize = 3;              // Data Output
-            int epochs = 200;                // Epochs Training
-            double learningRate = 0.01;      // Learning Rate
-            double momentum = 0.9;           // Momentum
+            int inputSize = 12;              // Entrada de Dados
+            int hiddenSize = 10;             // Numero de Neurônios
+            int outputSize = 3;              // Saida de Dados
+            int epochs = 5;                // Epocas de Treinamento
+            double learningRate = 0.01;      // Taxa de Aprendizado
+            double momentum = 0.8;           // Momentum
 
             Home neuralNetwork = new Home(inputSize, hiddenSize, outputSize);
             neuralNetwork.train(trainingInputs.toArray(new double[0][0]), trainingTargets.toArray(new double[0][0]), epochs, learningRate, momentum);
 
-            double validationError = neuralNetwork.calculaErro(validationInputs.toArray(new double[0][0]), validationTargets.toArray(new double[0][0]));
-            System.out.println("Taxa de Erro de " + validationError);
+            double taxaErro = neuralNetwork.calculaErro(validationInputs.toArray(new double[0][0]), validationTargets.toArray(new double[0][0]));
+            System.out.println("Taxa de Erro de " + taxaErro);
 
 
             double[] prediction = new double[0];
@@ -118,7 +118,7 @@ public class Home {
                 prediction = neuralNetwork.forward(inputToPredict);
 
                 int trueClass = classeVetor(validationTargets.get(i));
-                int predictedClass = Classe(prediction);
+                int predictedClass = obterClasse(prediction);
 
                 while (Matrix.size() <= trueClass) {
                     Matrix.add(new int[outputSize]);
@@ -157,7 +157,7 @@ public class Home {
     }
 
 
-    private static int Classe(double[] prediction) {
+    private static int obterClasse(double[] prediction) {
         int predictedClass = 0;
         double maxProbability = prediction[0];
         for (int i = 1; i < prediction.length; i++) {
@@ -177,6 +177,7 @@ public class Home {
         }
         return -1;
     }
+
     public double calculaErro(double[][] inputs, double[][] targets) {
         double totalError = 0.0;
 
